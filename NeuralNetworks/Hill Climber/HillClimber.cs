@@ -1,8 +1,10 @@
-﻿using System;
+﻿using NeuralNetworks.Perceptron;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace NeuralNetworks
 {
@@ -26,12 +28,12 @@ namespace NeuralNetworks
         public void Converge() 
         {
             
-            CurrentError = CalculateError(CurrentString);
+            CurrentError = ErrorFunctions.MAE(CurrentString, TargetString);
 
             while (CurrentError != 0) 
             {
                 string mutatedString = Mutate();
-                float newError = CalculateError(mutatedString);
+                float newError = ErrorFunctions.MAE(mutatedString, TargetString);
 
                 if(newError < CurrentError) 
                 {
@@ -42,7 +44,7 @@ namespace NeuralNetworks
                 Console.WriteLine("error: " + CurrentError);
             }
         }
-        public float CalculateError(string mutatedString) 
+        public float CalculateError(string mutatedString, string targetString) 
         {
             float accumulatedSum = 0; 
             for(int i = 0; i < TargetString.Length; i++) 
@@ -79,5 +81,7 @@ namespace NeuralNetworks
             }
             return sb.ToString();
         }
+
+
     }
 }

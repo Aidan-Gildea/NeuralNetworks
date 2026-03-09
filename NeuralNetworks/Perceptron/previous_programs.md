@@ -1,4 +1,8 @@
-﻿using System.Security.Cryptography.X509Certificates;
+### This document stores the previous programs used to test my perceptrons: 
+
+**1. Single perceptron test**
+```
+using System.Security.Cryptography.X509Certificates;
 using NeuralNetworks;
 using NeuralNetworks.Perceptron;
 
@@ -26,3 +30,10 @@ namespace MyNewProgram
         }
     }
 }
+
+```
+
+**2. Hill Climber Line of Best Fit Perceptron Test**
+```
+
+```
