@@ -14,56 +14,45 @@ namespace NeuralNetworks.Perceptron
     }
     public class LineOfBestFitPerceptron : Perceptron
     {
-        public Point[] points;
-        public double[] yValues; // the actual y values, the expected outputs
-        public double[] xValues; // x values
-        
-        public LineOfBestFitPerceptron(Point[] points, double minWeight, double maxWeight) : base(minWeight, maxWeight)
+        public double[] yValues; // the desired y values and expected outputs
+        public double[][] xValues; // inputs, stored as a 2d array where each x is an input aligns with a single weight
+
+        private static double MSE(double desired, double actual)
         {
-            this.points = points;
+            return Math.Pow(desired - actual, 2);
+        }
+
+        public LineOfBestFitPerceptron(Point[] points, double min, double max) : base(min, max, 1)
+        {
             yValues = points.Select(currPoint => currPoint.y).ToArray();
-            xValues = points.Select(currPoint => currPoint.x).ToArray();
+            double[] tempxValues = points.Select(currPoint => currPoint.x).ToArray();
+
+            // create a jagged array of all the different values to pass into the error function
+
+            xValues = new double[points.Length][];
+            for (int i = 0; i < xValues.Length; i++)
+            {
+                xValues[i] = new double[1];
+                xValues[i][0] = tempxValues[i];
+            }
+            ErrorFunction = MSE;
         }
 
-        public double Mutate(double mutationAmount, Random random)
+
+
+        public void Train(double minErrorRange, double maxIterations, double mutateAmount) 
         {
-            double error = ErrorFunctions.MSE(xValues, weights, bias, yValues); 
-            int index = random.Next(weights.Length) + 1;
-            double[] newWeights = weights;
-            double newBias = bias;
-            double newError; 
+            double error = GetError(xValues, yValues, Weights, Bias);
+            int counter = 0; 
 
-            if (index == weights.Length) // modifying the bias
+            while(error > minErrorRange && counter <= maxIterations) 
             {
-                newBias += RandomFunctions.RandomNumberBetween(-mutationAmount, mutationAmount);
-                newError = ErrorFunctions.MSE(xValues, weights, newBias, yValues);
-            }
-            else // either add or subtract the mutation amount
-            {
-                newWeights[index] += RandomFunctions.RandomNumberBetween(-mutationAmount, mutationAmount);
-                newError = ErrorFunctions.MSE(xValues, newWeights, bias, yValues);
+                error = Mutate(xValues, yValues, mutateAmount); // will mutate and return the new error
+                Console.WriteLine($"Slope: {Weights[0]}, Y Offset: {Bias}, Error: {error}");
+                counter++;
             }
 
-            if(newError < error) 
-            {
-                weights = newWeights;
-                bias = newBias;
-                error = newError;
-            }
-            // end of mutation
-            return newError;
-
-        }
-        public string Train(double minErrorRange, double mutationAmount, Random random) 
-        {
-            double error = ErrorFunctions.MSE(xValues, weights, bias, yValues);
-            while(Math.Abs(error) > minErrorRange) 
-            {
-                Mutate(mutationAmount, random);
-                Console.WriteLine($"Error: {error}");
-            }
-
-
+            Console.WriteLine($"Final Line of best fit: y = {Weights[0]}x + {Bias}");
 
         }
 

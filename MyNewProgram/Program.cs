@@ -1,28 +1,24 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using NeuralNetworks;
-using NeuralNetworks.Perceptron;
+﻿using NeuralNetworks.Perceptron;
 
 namespace MyNewProgram
 {
-
     internal class Program
     {
-        
         static void Main(string[] args)
         {
-            double[] weights = { 0.75, -1.25 };
-            double bias = 0.5;
-            Perceptron perceptron = new(weights, bias);
-
-            double[,] test_inputs = { { 0, 0 }, { 0.3, -0.7 }, { 1, 1 }, { -1, -1 }, { -0.5, 0.5 } };
-
-            double[] test_outputs = perceptron.Compute(test_inputs);
-
-            foreach(var output in test_outputs) 
+            // Points roughly on y = 2x + 1 with slight noise
+            // Plug these into Desmos to verify: (1,3.1), (2,5.0), (3,6.8), (4,9.2), (5,11.1)
+            Point[] points =
             {
-                Console.WriteLine(output.ToString());
-            }
+                new Point { x = 1, y = 3.1 },
+                new Point { x = 2, y = 5.0 },
+                new Point { x = 3, y = 6.8 },
+                new Point { x = 4, y = 9.2 },
+                new Point { x = 5, y = 11.1 },
+            };
 
+            LineOfBestFitPerceptron perceptron = new(points, -10, 10);
+            perceptron.Train(minErrorRange: 0.005, maxIterations: 100000, mutateAmount: 0.001);
         }
     }
 }
