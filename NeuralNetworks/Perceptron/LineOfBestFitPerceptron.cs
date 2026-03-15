@@ -17,17 +17,33 @@ namespace NeuralNetworks.Perceptron
         public double[] yValues; // the desired y values and expected outputs
         public double[][] xValues; // inputs, stored as a 2d array where each x is an input aligns with a single weight
 
+        public double xMin, xMax; // original x range, stored for unnormalization
+        public double yMin, yMax; // original y range, stored for unnormalization
+        public bool normalize;
+
         private static double MSE(double desired, double actual)
         {
             return Math.Pow(desired - actual, 2);
         }
 
-        public LineOfBestFitPerceptron(Point[] points, double min, double max) : base(min, max, 1)
+        public LineOfBestFitPerceptron(Point[] points, double min, double max, bool normalize) : base(min, max, 1)
         {
+            this.normalize = normalize;
+
             yValues = points.Select(currPoint => currPoint.y).ToArray();
             double[] tempxValues = points.Select(currPoint => currPoint.x).ToArray();
 
-            // create a jagged array of all the different values to pass into the error function
+            // will normalize the data if bool normalize is set to true
+            if (normalize)
+            {
+                xMin = tempxValues.Min();
+                xMax = tempxValues.Max();
+                yMin = yValues.Min();
+                yMax = yValues.Max();
+
+                tempxValues = NormalizationFunctions.Normalize(tempxValues, xMin, xMax, 0, 1);
+                yValues = NormalizationFunctions.Normalize(yValues, yMin, yMax, 0, 1);
+            }
 
             xValues = new double[points.Length][];
             for (int i = 0; i < xValues.Length; i++)
@@ -35,6 +51,7 @@ namespace NeuralNetworks.Perceptron
                 xValues[i] = new double[1];
                 xValues[i][0] = tempxValues[i];
             }
+
             ErrorFunction = MSE;
         }
 
@@ -52,7 +69,12 @@ namespace NeuralNetworks.Perceptron
                 counter++;
             }
 
-            Console.WriteLine($"Final Line of best fit: y = {Weights[0]}x + {Bias}");
+
+            // i don't understand this math from unnormalizing
+            double slope = Weights[0] * (yMax - yMin) / (xMax - xMin);
+            double yIntercept = Bias * (yMax - yMin) + yMin - slope * xMin;
+
+            Console.WriteLine($"Final Line of best fit: y = {slope}x + {yIntercept}");
 
         }
 

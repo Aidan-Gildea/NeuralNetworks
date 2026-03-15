@@ -21,9 +21,6 @@ namespace NeuralNetworks.Perceptron
 
         }
 
-        //static float MAE(double[] inputs, double weights, double bias, double target)
-        //{
-        //    // 1. calculate the weights
-        //}
+
     }
 }
