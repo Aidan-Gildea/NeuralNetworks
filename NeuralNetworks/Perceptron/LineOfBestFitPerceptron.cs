@@ -21,10 +21,7 @@ namespace NeuralNetworks.Perceptron
         public double yMin, yMax; // original y range, stored for unnormalization
         public bool normalize;
 
-        private static double MSE(double desired, double actual)
-        {
-            return Math.Pow(desired - actual, 2);
-        }
+        
 
         public LineOfBestFitPerceptron(Point[] points, double min, double max, bool normalize) : base(min, max, 1)
         {
@@ -52,7 +49,8 @@ namespace NeuralNetworks.Perceptron
                 xValues[i][0] = tempxValues[i];
             }
 
-            ErrorFunction = MSE;
+            // asigning the error function
+            ErrorFunction = ErrorFunctions.MSE;
         }
 
 

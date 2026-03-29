@@ -20,6 +20,11 @@ namespace NeuralNetworks.Perceptron
             return accumulatedSum / targetString.Length;
 
         }
+        public static double MSE(double desired, double actual)
+        {
+            return Math.Pow(desired - actual, 2);
+        }
+
 
 
     }

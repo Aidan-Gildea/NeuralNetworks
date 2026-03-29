@@ -6,15 +6,40 @@ using System.Threading.Tasks;
 
 namespace NeuralNetworks.Perceptron
 {
-    
-    public class Perceptron
+
+    public class ErrorFunction
+    {
+        public Func<double, double, double> Function { get; private set; }
+        public Func<double, double, double> Derivative { get; private set; }
+        public ErrorFunction(Func<double, double, double> function, Func<double, double, double> derivative)
+        {
+            Function = function;
+            Derivative = derivative;
+        }
+    }
+    public class ActivationFunction
+    {
+        public Func<double, double> Function { get; private set; }
+        public Func<double, double> Derivative { get; private set; }
+        public ActivationFunction(Func<double, double> function, Func<double, double> derivative)
+        {
+            Function = function;
+            Derivative = derivative;
+        }
+    }
+
+    public class Perceptron // access modifiers
     {
         public double[] Weights;
         public double Bias;
         private Random myRandom;
-        public Func<double, double, double> ErrorFunction; 
-        
-        public Perceptron(double[] weights, double bias, Random random) // manually setup perceptron
+
+        // note that you must manually define the error function and activation function outside of this class and in the inherited
+
+        protected ErrorFunction errorFunction;
+        protected ActivationFunction activationFunction;
+
+        public Perceptron(double[] weights, double bias) // manually setup perceptron
         {
             this.Weights = weights;
             this.Bias = bias;
@@ -23,7 +48,8 @@ namespace NeuralNetworks.Perceptron
         public Perceptron(double min, double max, int NoOfWeights) // min and max of weights / bias, no of weights
         {
             myRandom = new Random();
-            this.Weights = new double[NoOfWeights];
+            Weights = new double[NoOfWeights];
+            // assign the error function outside the definition
 
             // fill out the random weights based off of min and max weight
             for (int i = 0; i < Weights.Count(); i++)
@@ -33,6 +59,8 @@ namespace NeuralNetworks.Perceptron
             Bias = RandomFunctions.RandomNumberBetween(min, max, myRandom);
 
         }
+        
+        
 
         public double Compute(double[] inputs) // this function only works for if you have same no. of weights as inputs
         {
@@ -75,7 +103,7 @@ namespace NeuralNetworks.Perceptron
                     actual += inputs[i][j] * weights[j];
                 actual += bias;
 
-                accumulatedError += ErrorFunction(desiredOutputs[i], actual);
+                accumulatedError += errorFunction.Function(desiredOutputs[i], actual);
             }
             return accumulatedError / inputs.Length;
         }
