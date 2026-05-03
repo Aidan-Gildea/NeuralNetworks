@@ -33,11 +33,12 @@ namespace NeuralNetworks.Perceptron
         public double[] Weights;
         public double Bias;
         private Random myRandom;
+        public double LearningRate { get; set; }
 
         // note that you must manually define the error function and activation function outside of this class and in the inherited
 
-        protected ErrorFunction errorFunction;
-        protected ActivationFunction activationFunction;
+        public ErrorFunction errorFunction;
+        public ActivationFunction activationFunction;
 
         public Perceptron(double[] weights, double bias) // manually setup perceptron
         {
@@ -45,7 +46,7 @@ namespace NeuralNetworks.Perceptron
             this.Bias = bias;
         }
 
-        public Perceptron(double min, double max, int NoOfWeights) // min and max of weights / bias, no of weights
+        public Perceptron(double min, double max, int NoOfWeights, double learningRate) // min and max of weights / bias, no of weights
         {
             myRandom = new Random();
             Weights = new double[NoOfWeights];
@@ -58,6 +59,7 @@ namespace NeuralNetworks.Perceptron
             }
             Bias = RandomFunctions.RandomNumberBetween(min, max, myRandom);
 
+            LearningRate = learningRate;
         }
         
         

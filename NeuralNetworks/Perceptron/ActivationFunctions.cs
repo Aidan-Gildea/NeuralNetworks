@@ -6,36 +6,47 @@ using System.Threading.Tasks;
 
 namespace NeuralNetworks.Perceptron
 {
-    public class ActivationFunctions
+    public static class ActivationFunctions
     {
-        public double BinaryStep(double x) 
+        public static double BinaryStep(double x)
         {
-            if(x >= 0)
+            if (x >= 0)
             {
                 return 1;
             }
-            else 
+            else
             {
                 return 0;
             }
         }
 
-        public double Sigmoid(double x) 
+        public static double Sigmoid(double x)
         {
             return 1 / (1 + Math.Exp(-x));
         }
 
-        public double TanH(double x) 
+        public static double TanH(double x)
         {
             return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));
         }
 
-        public double ReLU(double x) 
+        public static double ReLU(double x)
         {
-            if(x <= 0) 
+            if (x <= 0)
             {
                 return 0;
             }
             return x;
         }
+
+        public static double Identity(double x)
+        {
+            return x;
+        }
+
+        public static double IdentityDerivative(double x)
+        {
+            return 1;
+        }
+    }
 }

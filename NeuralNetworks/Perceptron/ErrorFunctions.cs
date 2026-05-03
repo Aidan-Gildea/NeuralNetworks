@@ -25,6 +25,11 @@ namespace NeuralNetworks.Perceptron
             return Math.Pow(desired - actual, 2);
         }
 
+        public static double MSEDerivative(double desired, double actual)
+        {
+            return 2 * (actual - desired);
+        }
+
 
 
     }

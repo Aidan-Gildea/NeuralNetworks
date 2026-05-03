@@ -1,0 +1,212 @@
+﻿Skip to content
+GreatMindsRobotics
+NeuralNetworksCurriculum
+Repository navigation
+Code
+Issues
+13
+ (13)
+Pull requests
+Agents
+Actions
+Projects
+Wiki
+Security and quality
+Insights
+Training a Neural Network with Genetic Learning
+Lorenzo Lopez edited this page on Feb 23, 2023 · 9 revisions
+Genetic Algorithm
+A genetic algorithm is a process of weight training that was inspired by the concept of Darwinian evolution. Genetic algorithms are used to generate high-quality solutions to optimization and search problems with bio-inspired operators such as mutation, crossover, and selection.
+
+On initialize, create a population of randomized neural networks and repeat the following until you receive a network that achieves the desired results:
+
+Fitness Calculation: run each network through a fitness function to determine how well each network did with the given task. A new fitness function will have to be written for each task you want to train a neural network for (i.e. if you want to train a neural network for Flappy Bird and another for 2048, you will need to have a different fitness function for each game).
+At this stage you can check if any of the networks are trained to complete the given task and exit the training algorithm.
+Selection:
+Sort the networks by their fitness value
+Choose a section at the top of the list (maybe 10%) of networks and keep them unchanged. They will be used to crossover with the rest of the population.
+Crossover: Take all the networks between the top and bottom sections of the population (leaving the few networks leftover at the bottom for randomization) and make them crossover with a network from the top section. This will allow the networks that gained the most fitness to share their positive traits with the rest of the population.
+Mutate: Take the same networks and mutate them. This will create minor variations of networks, hopefully (but not necessarily) resulting in positive mutations. Notice that this step is similar to hill climbing.
+Survivor Selection: Take the worst % of the population and completely randomize them. This keeps a good cycle of fresh networks in case all of the current networks are stuck in local minimums or are wandering.
+Repeat until a network is trained that completes the given task.
+Fitness
+As mentioned earlier, fitness is the only part of the genetic process which is completely specific to the current task at hand. As such, fitness algorithms will look completely different depending on what said task is. However, the core idea of fitness remains the same. The fitness value for a network represents how well that network has performed on the current run. Higher values indicate more success, and lower values indicate more failure. Because the only time fitness is used is to sort different networks in the population, the units of the fitness value are completely arbitrary, and only matter in relation to one another.
+
+For example, if I were calculating fitness for a 2048 algorithm, I might set a Network's fitness value equal to the value of its highest square plus some bonus points based on how many turns it lasted before losing.
+
+Mutations
+In the mutation phase, we want to alter some of the population at random. To do so, we can implement a mutation rate that we can use at each weight in the network to determine if we should change that weight. Once we have decided that we are going to change the weight, there are a few options you can use when it comes to mutating the value of the weights. You can either:
+
+completely replace the weight with a new value
+change the weight by some percentage (multiply the weight by some random number between 0.5 and 2.5)
+add or subtract a random number between 0 and 1 to/from the weight
+change the sign of the weight
+swap weights on a single neuron
+You can get creative with the mutation operations and may discover something that works better for your particular problem. Here is some example code for what a mutation function may look like:
+
+//This implementation will either change the weight/bias by some percentage change the sign of the weight/bias
+public void Mutate(Network net, Random random, double mutationRate)
+{
+    foreach (Layer layer in net.Layers)
+    {
+        foreach (Neuron neuron in layer.Neurons)
+        {
+            //Mutate the Weights
+            for (int i = 0; i < neuron.Weights.Length; i++)
+            {
+                if (random.NextDouble() < mutationRate)
+                {
+                    if (random.Next(2) == 0)
+                    {
+                        neuron.Weights[i] *= random.NextDouble(0.5, 1.5); //scale weight
+                    }
+                    else
+                    {
+                        neuron.Weights[i] *= -1; //flip sign
+                    }
+                }
+            }
+
+            //Mutate the Bias
+            if (random.NextDouble() < mutationRate)
+            {
+                if (random.Next(2) == 0)
+                {
+                    neuron.Bias *= random.NextDouble(0.5, 1.5); //scale weight
+                }
+                else
+                {
+                    neuron.Bias *= -1; //flip sign
+                }
+            }
+        }
+    }
+}
+Crossover
+Crossover (also known as breeding) is the operation that takes two neural networks and mixes their weights to create a new neural network that is the combination of both. I suggest you don't actually create a 3rd network because then training will cause a lot of garbage collections (ask an instructor if you don't know what that means) as we don't use the parent after the crossover. Instead, just have the function turn one of the parents into the child.
+
+There are also few options you can use when it comes to crossover. You can either:
+
+swap individual weights and biases
+swap neurons (not by reference!)
+swap layers (not by reference!)
+single-point crossover: for each layer, select a crossover point such that neurons before the crossover are from parent A and neurons after the crossover are from parent B (and vice-versa):
+
+
+two-point and k-point crossover: In two-point crossover, two crossover points are picked. The concept can be generalized to k-point crossover for any positive integer k, picking k crossover points:
+
+
+Here is some example code for a single-point crossover method:
+
+public void Crossover(Network winner, Network loser, Random random)
+{
+    for (int i = 0; i < winner.Layers.Length; i++)
+    {
+        //References to the Layers
+        Layer winLayer = winner.Layers[i];
+        Layer childLayer = loser.Layers[i];
+
+        int cutPoint = random.Next(winLayer.Neurons.Length); //calculate a cut point for the layer
+        bool flip = random.Next(2) == 0; //randomly decide which side of the cut point will come from winner
+
+        //Either copy from 0->cutPoint or cutPoint->Neurons.Length from the winner based on the flip variable
+        for (int j = (flip ? 0 : cutPoint); j < (flip ? cutPoint : winLayer.Neurons.Length); j++)
+        {
+            //References to the Neurons
+            Neuron winNeuron = winLayer.Neurons[j];
+            Neuron childNeuron = childLayer.Neurons[j];
+
+            //Copy the winners Weights and Bias into the loser/child neuron
+            winNeuron.Weights.CopyTo(childNeuron.Weights, 0);
+            childNeuron.Bias = winNeuron.Bias;
+        }
+    }
+}
+Bringing it all together
+An example implementation of the full training process is given below:
+
+//This function assumes all the fitness values have already been calculated
+public void Train((Network net, double fitness)[] population, Random random, double mutationRate)
+{
+    Array.Sort(population, (a, b) => b.fitness.CompareTo(a.fitness));
+    
+    int start = (int)(population.Length * 0.1);
+    int end = (int)(population.Length * 0.9);
+    
+    //Notice that this process is only called on networks in the middle 80% of the array
+    for (int i = start; i < end; i++)
+    {
+        Crossover(population[random.Next(start)].net, population[i].net, random);
+        Mutate(population[i].net, random, mutationRate);
+    }
+    
+    //Removes the worst performing networks
+    for (int i = end; i < population.Length; i++)
+    {
+        population[i].net.Randomize(random);
+    }
+}
+Assignments
+Flappy Birds: Train a neural network using genetic learning to play the game Flappy Bird. Use a 2-4-1 neural network with binary step in which the two inputs are x-distance to the next pipe and y-distance to the gap.
+Train a 1-n-1 neural network to approximate a Sin Wave from 0 to 2π (it's up to YOU to find n and n can be several layers)
+Advanced Assignment:
+Snake: Train a neural network using genetic learning to play the game Snake. It is up to you to find out how to structure your network and what the inputs/outputs should represent.
+References
+Take a look at our implementation!
+https://en.wikipedia.org/wiki/Genetic_algorithm
+https://stackoverflow.com/questions/31708478/how-to-evolve-weights-of-a-neural-network-in-neuroevolution
+<-- Previous | Gradient Descent -->
+
+Pages 25
+Chapters
+Home
+Appendix
+Summation Notation
+C# Delegates
+Derivatives
+Introduction
+Intro to Machine Learning
+Hill Climber
+Perceptron
+Perceptron
+Training the Perceptron with Hill Climbing
+Problems with Hill Climbing
+Normalizing & Filtering
+Activation Functions
+Training the Perceptron with Gradient Descent
+The Math
+Closing Notes on Perceptrons
+Neural Network
+Feed-Forward Neural Network
+Training a Neural Network
+Genetic Learning
+Training a Neural Network with Genetic Learning
+Gradient Descent
+Training a Neural Network with Gradient Descent
+The Math
+Momentum
+Mini-Batch & Stochastic Gradient Descent
+Game Theory
+MiniMax Trees
+Alpha Beta Pruning
+Monte Carlo Tree Search
+Miscellaneous
+Genetic Art
+Clone this wiki locally
+https://github.com/GreatMindsRobotics/NeuralNetworksCurriculum.wiki.git
+FooterGreat Minds Robotics
+Great Minds Robotics Home page
+Great Minds Robotics
+GMR YouTube channel
+GMR YouTube channel
+© 2026 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Community
+Docs
+Contact
+Manage cookies
+Do not share my personal information

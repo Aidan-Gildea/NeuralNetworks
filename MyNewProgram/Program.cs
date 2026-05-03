@@ -17,8 +17,8 @@ namespace MyNewProgram
                 new Point { x = 5, y = 11.1 },
             };
 
-            LineOfBestFitPerceptron perceptron = new(points, -10, 10, normalize: true);
-            perceptron.Train(minErrorRange: 0.0001, maxIterations: 1000000, mutateAmount: 0.0005);
+            // LineOfBestFitPerceptron perceptron = new(points, -10, 10, normalize: true);
+            // perceptron.Train(minErrorRange: 0.0001, maxIterations: 1000000, mutateAmount: 0.0005);
         }
     }
 }

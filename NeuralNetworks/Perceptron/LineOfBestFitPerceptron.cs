@@ -20,10 +20,12 @@ namespace NeuralNetworks.Perceptron
         public double xMin, xMax; // original x range, stored for unnormalization
         public double yMin, yMax; // original y range, stored for unnormalization
         public bool normalize;
+        // stochastic = one at a time
+        // batch training is multiple inputs at once (a batch of inputs)
 
         
 
-        public LineOfBestFitPerceptron(Point[] points, double min, double max, bool normalize) : base(min, max, 1)
+        public LineOfBestFitPerceptron(Point[] points, double min, double max, double learningRate, bool normalize) : base(min, max, 1, learningRate)
         {
             this.normalize = normalize;
 
@@ -49,12 +51,13 @@ namespace NeuralNetworks.Perceptron
                 xValues[i][0] = tempxValues[i];
             }
 
-            // asigning the error function
-            ErrorFunction = ErrorFunctions.MSE;
+            // error and activation functions are set
+            errorFunction = new(ErrorFunctions.MSE, ErrorFunctions.MSEDerivative);
+            activationFunction = new(ActivationFunctions.Identity, ActivationFunctions.IdentityDerivative);
         }
 
 
-
+        
         public void Train(double minErrorRange, double maxIterations, double mutateAmount) 
         {
             double error = GetError(xValues, yValues, Weights, Bias);
@@ -76,7 +79,46 @@ namespace NeuralNetworks.Perceptron
 
         }
 
+        public void BatchTrain(double maxEpochs) 
+        {
+            int epochs = 0;
+            while(GetError(xValues, yValues, Weights, Bias) > 0 && epochs < maxEpochs) 
+            {
 
+                double[] accumulatedWeightChanges = new double[Weights.Length];
+                double accumulatedBiasChange = 0;
+
+                for (int i = 0; i < xValues.Length; i++)
+                {
+                    double output = Compute(xValues[i]);
+                    double desiredOutput = yValues[i];
+                    double activationInput = Weights[0] * xValues[i][0] + Bias;
+
+                    accumulatedWeightChanges[0] += ErrorToWeightPartialDerivative(output, desiredOutput, activationInput);
+                    accumulatedBiasChange += ErrorToBiasPartialDerivative(output, desiredOutput, activationInput);
+                }
+
+                // Apply the accumulated changes
+                for (int i = 0; i < Weights.Length; i++)
+                {
+                    Weights[i] += accumulatedWeightChanges[i];
+                }
+                Bias += accumulatedBiasChange;
+
+            }
+
+        }
+
+
+        private double ErrorToWeightPartialDerivative(double output, double desiredOutput, double activationInput) 
+        {
+            return errorFunction.Derivative(output, desiredOutput) * activationFunction.Derivative(activationInput) * -LearningRate;
+        }
+
+        private double ErrorToBiasPartialDerivative(double output, double desiredOutput, double activationInput) 
+        {
+            return errorFunction.Derivative(output, desiredOutput) * activationFunction.Derivative(activationInput) * -LearningRate;
+        }
     }
 
 }
