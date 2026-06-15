@@ -50,6 +50,13 @@ namespace Flappy_Game
             Pipes.RemoveAll(p => p.RightEdge < -10f);
         }
 
+        public Pipe NextPipe(float x)
+        {
+            foreach (var p in Pipes)
+                if (p.RightEdge >= x) return p;
+            return null;
+        }
+
         public void Draw(SpriteBatch spriteBatch, Texture2D pixel)
         {
             foreach (var p in Pipes) p.Draw(spriteBatch, pixel);

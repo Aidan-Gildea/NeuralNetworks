@@ -1,13 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetworks", "NeuralNetworks\NeuralNetworks.csproj", "{BAE37A28-680E-4A6C-9F9E-8CB7880A463E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNewProgram", "MyNewProgram\MyNewProgram.csproj", "{201D6E57-1801-4B5D-92DD-B2F16D7BE99A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flappy Game", "Flappy Game\Flappy Game.csproj", "{1076E069-3558-4121-BF8A-CB5CC6491088}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backpropogation", "Backpropogation\Backpropogation.csproj", "{FD9D4385-66B9-4822-8DF1-85C5ADC7084C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UintTests", "UintTests\UintTests.csproj", "{786CEAA8-49F0-4684-86D2-1853A19370D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeAI", "TicTacToeAI\TicTacToeAI.csproj", "{2C73A6F9-18AC-42DD-B60B-19A921216415}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniMax", "MiniMax\MiniMax.csproj", "{D7A13A26-42D9-42E5-AC78-7A33A520C2F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,22 @@ Global
 		{1076E069-3558-4121-BF8A-CB5CC6491088}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1076E069-3558-4121-BF8A-CB5CC6491088}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1076E069-3558-4121-BF8A-CB5CC6491088}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD9D4385-66B9-4822-8DF1-85C5ADC7084C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD9D4385-66B9-4822-8DF1-85C5ADC7084C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD9D4385-66B9-4822-8DF1-85C5ADC7084C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD9D4385-66B9-4822-8DF1-85C5ADC7084C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{786CEAA8-49F0-4684-86D2-1853A19370D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786CEAA8-49F0-4684-86D2-1853A19370D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786CEAA8-49F0-4684-86D2-1853A19370D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786CEAA8-49F0-4684-86D2-1853A19370D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C73A6F9-18AC-42DD-B60B-19A921216415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C73A6F9-18AC-42DD-B60B-19A921216415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C73A6F9-18AC-42DD-B60B-19A921216415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C73A6F9-18AC-42DD-B60B-19A921216415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A13A26-42D9-42E5-AC78-7A33A520C2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A13A26-42D9-42E5-AC78-7A33A520C2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A13A26-42D9-42E5-AC78-7A33A520C2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A13A26-42D9-42E5-AC78-7A33A520C2F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

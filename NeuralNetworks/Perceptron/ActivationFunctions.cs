@@ -25,9 +25,21 @@ namespace NeuralNetworks.Perceptron
             return 1 / (1 + Math.Exp(-x));
         }
 
+        public static double SigmoidDerivative(double x)
+        {
+            double s = Sigmoid(x);
+            return s * (1 - s);
+        }
+
         public static double TanH(double x)
         {
             return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));
+        }
+
+        public static double TanHDerivative(double x)
+        {
+            double t = TanH(x);
+            return 1 - t * t;
         }
 
         public static double ReLU(double x)

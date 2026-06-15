@@ -46,7 +46,7 @@ namespace NeuralNetworks.Feed_Forward_neural_Network
         }
 
         // randomize all of the neurons; pass of to the neuron native randomization function
-        public void Randomize(Random random, double min, double max) 
+        public void Randomize(Random random, double min, double max)
         {
             foreach (var neuron in Neurons)
             {
@@ -64,6 +64,31 @@ namespace NeuralNetworks.Feed_Forward_neural_Network
                 Outputs[i] = Neurons[i].Output;
             }
             return Outputs;
+        }
+
+        public void Backprop(double learningRate) 
+        {
+            // backprops all of the layer's neurons
+            foreach(var neuron in Neurons) 
+            {
+                neuron.BackProp(learningRate);
+            }
+        }
+
+        public void SetAsInputLayer() 
+        {
+            foreach(var neuron in Neurons) 
+            {
+                neuron.IsInput = true;
+            }
+        }
+
+        public void ApplyUpdates(double momentum) 
+        {
+            foreach(var neuron in Neurons) 
+            {
+                neuron.ApplyUpdates(momentum);
+            }
         }
     }
 }
