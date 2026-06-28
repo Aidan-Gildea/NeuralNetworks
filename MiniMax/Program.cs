@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MiniMax
 {
@@ -15,7 +16,7 @@ namespace MiniMax
     public interface IGameState<T> where T : IGameState<T> // T has to also inherit from igamestate
     {
         public BoardState State { get; }
-        public bool IsMaxxer { get; set; }
+        public bool IsMax { get; set; }
         T[] GetChildren();
 
     }
@@ -26,15 +27,24 @@ namespace MiniMax
 
         // -- interface properties
         public BoardState State { get; private set; }
-        public bool IsMaxxer { get; set; }
+        public bool IsMax { get; set; }
 
         public int Value { get; set; }
 
         List<TicTacToeState> Children { get; set; }
+
+        public int alpha { get; set; }
+        public int beta { get; set; }
+
+
+        // ------------ implementing alpha and beta
+        // if I dont need to explore a specific tree, then I put a break in the foreach and just dont add it to my children. 
         
+
+
         // -- 
 
-        public TicTacToeState(int[,] board, bool isMaxxer) 
+        public TicTacToeState(int[,] board, bool isMax) 
         {
             if (board == null) 
             {
@@ -47,9 +57,11 @@ namespace MiniMax
             }
 
             this.board = board;
-            IsMaxxer = isMaxxer;
+            IsMax = isMax;
 
             State = GetState(this.board);
+
+
         }
 
         public TicTacToeState[] GetChildren()
@@ -65,9 +77,9 @@ namespace MiniMax
                         int[,] newBoard = new int[3, 3];
                         board.MyCopyTo(newBoard);
 
-                        newBoard[x, y] = IsMaxxer ? 1 : -1;
+                        newBoard[x, y] = IsMax ? 1 : -1;
 
-                        states.Add(new(newBoard, !IsMaxxer));
+                        states.Add(new(newBoard, !IsMax));
                     }
                 }
             }
@@ -75,11 +87,8 @@ namespace MiniMax
             return states.ToArray();
         }
 
-        public void DefineTree()
+        public void MiniMax()
         {
-            // base case: the game is over. Score it now — a win can happen
-            // before the board is full, so we must check State here rather
-            // than waiting until there are no children left to generate.
             if (State != BoardState.Ongoing)
             {
                 Children = new();
@@ -92,12 +101,30 @@ namespace MiniMax
             List<int> childValues = new();
             foreach (var child in Children)
             {
-                child.DefineTree();
+                child.MiniMax();
                 childValues.Add(child.Value);
+
+                if(IsMax) 
+                {
+                    beta = child.Value < beta ? child.Value : beta;
+                }
+                else
+                {
+                    alpha = child.Value > alpha ? child.Value : alpha;
+                }
+
+                // check if alpha >= beta: 
+                //  what this essentially means is that previously a state above you (a maxxer if youre a minner and a minner if youre a maxxer) has found a value that is
+                //  higher than what you can produce. Therefore whatever min of the current node you can find that is less than the min that you currently have is pointless
+                
+                if(alpha >= beta) 
+                {
+                    break;
+                }
             }
 
             // maxxer (x) maximizes, minner (o) minimizes
-            Value = IsMaxxer ? childValues.Max() : childValues.Min();
+            Value = IsMax ? childValues.Max() : childValues.Min();
         }
 
         // +ve favours x, -ve favours o. All wins score the same regardless of
@@ -120,9 +147,7 @@ namespace MiniMax
             TicTacToeState best = null;
             foreach (var child in Children)
             {
-                if (best == null
-                    || (IsMaxxer && child.Value > best.Value)
-                    || (!IsMaxxer && child.Value < best.Value))
+                if (best == null || (IsMax && child.Value > best.Value) || (!IsMax && child.Value < best.Value))
                 {
                     best = child;
                 }
@@ -199,7 +224,7 @@ namespace MiniMax
                 else
                 {
                     Console.WriteLine("AI is thinking...");
-                    state.DefineTree();           // build + score the game tree
+                    state.MiniMax();           // build + score the game tree
                     board = state.BestMove().board; // play the optimal child
                 }
 
@@ -270,7 +295,16 @@ namespace MiniMax
         public MiniMax(int[,] startBoard, bool isMax) 
         {
             start = new(startBoard, isMax);
-            start.DefineTree();
+
+            // setting alpha & beta to inf and -inf
+
+            start.alpha = int.MinValue;
+            start.beta = int.MaxValue;
+
+
+            start.MiniMax();
+
+
 
         }
 
