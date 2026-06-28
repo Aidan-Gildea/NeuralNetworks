@@ -361,3 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# --- Excluded from this repo: not part of the VS solution ---
+/ConsoleApp1/
+/MyProgram/
+/TicTacToeAI/
+/TicTacToeMinimax/
+/UintTests/
+/IMG_8763.png
+/README.md.txt
+/.obsidian/
+.claude/
