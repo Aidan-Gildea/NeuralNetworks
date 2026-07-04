@@ -1,6 +1,6 @@
 # Neural Networks from Scratch in C#
 
-Classical neural networks and game AI implemented from first principles in C#. No ML libraries: every neuron, weight update, and search tree here is written by hand. The goal was to understand the math by building it, the same philosophy as my [custom ISA and CPU](https://github.com/Aidan-Gildea/SimpleISA): work one layer below the abstraction you normally get for free.
+Classical neural networks and game AI implemented from first principles in C#. No ML libraries: every neuron, weight update, and search tree here is written by hand. The goal was to understand the math by building it, the same philosophy as my [custom CPU and toolchain](https://github.com/Aidan-Gildea/full-stack-8bit-cpu): work one layer below the abstraction you normally get for free.
 
 ## What's inside
 
@@ -36,7 +36,7 @@ The Flappy Bird project restores MonoGame automatically through NuGet on first b
 
 ## Related projects
 
-- [SimpleISA](https://github.com/Aidan-Gildea/SimpleISA): a custom 32-bit instruction set with an assembler, disassembler, emulator, and a gate-level CPU in Logisim.
+- [full-stack-8bit-cpu](https://github.com/Aidan-Gildea/full-stack-8bit-cpu): an 8-bit CPU built gate by gate in Logisim, plus the custom ISA, assembler, and emulator that program it.
 - [robot-arm-3dof](https://github.com/Aidan-Gildea/robot-arm-3dof): a 3-DOF robot arm with inverse kinematics derived from first principles.
 
 ## License
