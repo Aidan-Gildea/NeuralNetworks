@@ -26,7 +26,7 @@ public class TicTacToeState : IGameState
     public bool CurrentPlayer { get; set; }
 
 
-    public TicTacToeState(int[,] board, bool currentPlayer)
+    public TicTacToeState(int[] board, bool currentPlayer)
     {
         this.board = board;
         CurrentPlayer = currentPlayer;
